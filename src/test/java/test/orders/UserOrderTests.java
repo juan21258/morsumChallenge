@@ -1,5 +1,8 @@
 package test.orders;
 import com.microsoft.playwright.*;
+
+import static org.testng.Assert.assertEquals;
+
 import org.testng.annotations.*;
 import pages.*;
 
@@ -9,6 +12,8 @@ public class UserOrderTests {
     private Browser browser;
     private Page page;
     private LoginPage loginPage;
+    private ProductPage productPage;
+    private CartPage cartPage;
 
     @BeforeClass
     public void setUp() throws Exception {
@@ -32,6 +37,14 @@ public class UserOrderTests {
         loginPage.enterUsername("standard_user");
         loginPage.enterPassword("secret_sauce");
         loginPage.clickLoginButton();
-        
+        //Product selection
+        productPage = new ProductPage(page);
+        productPage.clickSortByPriceHighToLow();
+        productPage.addProduct();
+        productPage.goToCart();
+        //Assertion of the product in the cart
+        cartPage = new CartPage(page);
+        String productInCart = cartPage.getItemName();
+        assertEquals(productInCart, "Sauce Labs Bike Light");
     }
 }
